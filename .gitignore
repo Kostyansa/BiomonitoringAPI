@@ -1,0 +1,7 @@
+__pycache__
+config.json
+.idea/
+cache/
+catboost_info/
+resources/model/catboost/
+test.py
