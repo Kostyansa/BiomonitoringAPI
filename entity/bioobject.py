@@ -1,11 +1,12 @@
 from dataclasses import dataclass
+from typing import Optional
 import cv2
 
 @dataclass
 class Bioobject:
-    id: int
     name: str
-    path: str
+    img_path: str
+    id: Optional[int] = None
 
     def img(self):
-        return cv2.imread(self.path)
+        return cv2.imread(self.img_path)
