@@ -5,3 +5,4 @@ cache/
 catboost_info/
 resources/model/catboost/
 test.py
+*.log

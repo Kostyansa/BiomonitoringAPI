@@ -3,9 +3,9 @@ import threading
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from controller.model import model_router
-from controller.bioobject import bioobject_router
 from settings import settings
 
 logging.basicConfig(filename="ml.log", format='%(asctime)s:%(levelname)s:%(message)s', encoding='utf-8', level=logging.DEBUG)
@@ -14,7 +14,12 @@ app = FastAPI(docs_url='/api/', redoc_url=None, title=settings.APP_TITLE, versio
               swagger_ui_oauth2_redirect_url='/api/oauth2-redirect/')
 
 app.include_router(router=model_router)
-app.include_router(router=bioobject_router)
+# app.include_router(router=bioobject_router)
+
+app.add_middleware(
+        CORSMiddleware,
+        allow_origins=['*']
+    )
 
 
 def server():

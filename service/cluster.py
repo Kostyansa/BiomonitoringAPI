@@ -11,7 +11,7 @@ class ModelService:
         pass
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
-        image = bioobject_entity.img()
+        image = cv2.imread(bioobject_entity.name)
 
         image = cv2.resize(image, (256, 112))
         image_original = image.copy()
@@ -68,10 +68,10 @@ class ModelService:
             image[i][j][1] = colors[labels_for_image[k]][1]
             image[i][j][2] = colors[labels_for_image[k]][2]
 
-        cv2.imwrite('image_clustered.png', image)
+        cv2.imwrite(f'{bioobject_entity.name}_image_clustered.png', image)
 
         median_blur_image = cv2.medianBlur(image, 5)
-        cv2.imwrite('median_blur_image.png', median_blur_image)
+        cv2.imwrite(f'{bioobject_entity.name}_median_blur_image.png', median_blur_image)
 
         clusters = {}
 
@@ -98,4 +98,3 @@ class ModelService:
                 clusters[cluster] = None
 
         cv2.waitKey(0)
-        print(1)

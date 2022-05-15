@@ -1,14 +1,17 @@
 from sqlalchemy.engine import Engine
 from sqlalchemy import text
 
-from entity import bioobject
+from entity.bioobject import Bioobject
 
 
-class UserRepository:
+class BioobjectRepository:
     def __init__(self, engine: Engine) -> None:
         self.engine = engine
 
     @staticmethod
     def rowmapper(row):
         if row:
-            return bioobject.Bioobject(row['id', row['name'], row['path']])
+            return Bioobject()
+
+    def save(self, bioobject_entity: Bioobject):
+        self.engine.execute()

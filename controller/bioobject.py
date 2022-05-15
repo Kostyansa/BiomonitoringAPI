@@ -1,13 +1,11 @@
-from service.bioobject import BioobjectService
-from entity.bioobject import Bioobject
 from pydantic import BaseModel
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
+from fastapi import File, UploadFile
+from uuid import uuid4
 
-
-class BioobjectSavingDto(BaseModel):
-    name: str
-    image: str
+from service.bioobject import BioobjectService
+from entity.bioobject import Bioobject
 
 
 class BioobjectController:
@@ -19,13 +17,13 @@ class BioobjectController:
     def get(self, id: int):
         return self.bioobject_service.get(id)
 
-    def save(self, bioobject_dao: BioobjectSavingDto):
-        path = self.bioobject_service.save_image(bioobject_dao.image)
-        bioobject_entity = Bioobject(bioobject_dao.name, path)
+    def save(self, name, file):
+        content = file.read()
+        bioobject_entity = Bioobject(name, content=content)
         return self.bioobject_service.save(bioobject_entity)
 
 
-bioobject_router = APIRouter(prefix='bioobject', tags=['bioobject'])
+bioobject_router = APIRouter(prefix='/bioobject', tags=['bioobject'])
 bioobject_controller = BioobjectController()
 
 
@@ -36,6 +34,6 @@ async def get(id: int):
 
 
 @bioobject_router.post('/save/', response_class=JSONResponse)
-async def analyse(bioobject_entity: BioobjectSavingDto):
-    response = None
+async def save(name: str = uuid4().hex, file: UploadFile = File(...)):
+    response = bioobject_controller.save(name, file)
     return response
