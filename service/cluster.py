@@ -1,4 +1,7 @@
+import logging
+
 from sklearn.cluster import DBSCAN
+from ast import Num
 import cv2
 import numpy as np
 import entity.bioobject as bioobject
@@ -11,7 +14,7 @@ class ModelService:
         pass
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
-        image = cv2.imread(bioobject_entity.name)
+        image = cv2.imread(f'./picture/{bioobject_entity.name}')
 
         image = cv2.resize(image, (256, 112))
         image_original = image.copy()
@@ -24,6 +27,8 @@ class ModelService:
             for j in range(256):
                 if image_thresh[i][j] == 0:
                     mask.append([i, j])
+
+        area_of_object = len(mask)
 
         data_for_clustering = []
         min_distance = [1, 1, 1]
@@ -48,7 +53,6 @@ class ModelService:
         test[1] /= len(mask)
         test[2] /= len(mask)
         kek = [0, 0, 0]
-        test_precision = np.linalg.norm(np.array(kek) - np.array(test)) * 0.0152
 
         epsilon_precision = np.linalg.norm(np.array(max_distance) - np.array(min_distance)) * 0.0078
 
@@ -58,7 +62,7 @@ class ModelService:
 
         labels_for_image = clustering.labels_
         labels_quantity_ = clustering.labels_.max() - clustering.labels_.min() + 2
-        print(labels_quantity_)
+        logging.debug(f'Labels: {labels_quantity_}')
 
         colors = color.color_randomizer(labels_quantity_)
 
@@ -68,10 +72,7 @@ class ModelService:
             image[i][j][1] = colors[labels_for_image[k]][1]
             image[i][j][2] = colors[labels_for_image[k]][2]
 
-        cv2.imwrite(f'{bioobject_entity.name}_image_clustered.png', image)
-
         median_blur_image = cv2.medianBlur(image, 5)
-        cv2.imwrite(f'{bioobject_entity.name}_median_blur_image.png', median_blur_image)
 
         clusters = {}
 
@@ -79,22 +80,94 @@ class ModelService:
             i, j = coords
             hex_color = color.RGB2HEX(median_blur_image[i][j])
             if not (hex_color in clusters):
-                clusters[hex_color] = {'area': 1, 'median_original_color': [int(image_original[i][j][0]),
-                                                                            int(image_original[i][j][1]),
-                                                                            int(image_original[i][j][2])]}
+                clusters[hex_color] = {'area': 1,
+                                       'median_original_color': [int(image_original[i][j][0]),
+                                                                 int(image_original[i][j][1]),
+                                                                 int(image_original[i][j][2])],
+                                       'coords': [[i, j]]}
                 # clusters.add(Cluster(median_blur_image[i][j], image_original[i][j]))
             else:
                 clusters[hex_color]['area'] += 1
                 clusters[hex_color]['median_original_color'][0] += image_original[i][j][0]
                 clusters[hex_color]['median_original_color'][1] += image_original[i][j][1]
                 clusters[hex_color]['median_original_color'][2] += image_original[i][j][2]
+                clusters[hex_color]['coords'].append([i, j])
 
         for cluster in clusters:
             if (clusters[cluster]['area'] >= 10):
                 clusters[cluster]['median_original_color'][0] /= clusters[cluster]['area']
                 clusters[cluster]['median_original_color'][1] /= clusters[cluster]['area']
                 clusters[cluster]['median_original_color'][2] /= clusters[cluster]['area']
+                if (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][2]
+                        > clusters[cluster]['median_original_color'][1] and 15 <=
+                        clusters[cluster]['median_original_color'][0] <= 84 and
+                        36 <= clusters[cluster]['median_original_color'][1] <= 103 and 93 <=
+                        clusters[cluster]['median_original_color'][2] <= 144):
+                    clusters[cluster]['type'] = 'rot'
+
+                elif (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][1]
+                      > clusters[cluster]['median_original_color'][2] and 66 <=
+                      clusters[cluster]['median_original_color'][0] <= 146 and
+                      66 <= clusters[cluster]['median_original_color'][1] <= 206 and 60 <=
+                      clusters[cluster]['median_original_color'][2] <= 188):
+                    clusters[cluster]['type'] = 'green_mould'
+
+                elif (0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
+                    1] <= 1 and
+                      0.8 <= clusters[cluster]['median_original_color'][1] / clusters[cluster]['median_original_color'][
+                          2] <= 1 and
+                      0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
+                          2] <= 1 and
+                      clusters[cluster]['median_original_color'][0] < 150):
+                    clusters[cluster]['type'] = 'necrosis'
+                elif (0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
+                    1] <= 1 and
+                      0.8 <= clusters[cluster]['median_original_color'][1] / clusters[cluster]['median_original_color'][
+                          2] <= 1 and
+                      0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
+                          2] <= 1 and
+                      clusters[cluster]['median_original_color'][0] > 150):
+                    clusters[cluster]['type'] = 'white_mold'
+                else:
+                    clusters[cluster]['type'] = 'normal'
             else:
                 clusters[cluster] = None
 
         cv2.waitKey(0)
+        clusters_processed = {}
+        for cluster in clusters:
+            if clusters[cluster] == None:
+                continue
+            if (clusters[cluster]['type'] == 'normal'):
+                for coord in clusters[cluster]['coords']:
+                    i, j = coord
+                    median_blur_image[i][j][0] = 0
+                    median_blur_image[i][j][1] = 255
+                    median_blur_image[i][j][2] = 0
+            elif (clusters[cluster]['type'] == 'necrosis'):
+                for coord in clusters[cluster]['coords']:
+                    i, j = coord
+                    median_blur_image[i][j][0] = 0
+                    median_blur_image[i][j][1] = 0
+                    median_blur_image[i][j][2] = 0
+            elif (clusters[cluster]['type'] == 'white_mold'):
+                for coord in clusters[cluster]['coords']:
+                    i, j = coord
+                    median_blur_image[i][j][0] = 255
+                    median_blur_image[i][j][1] = 255
+                    median_blur_image[i][j][2] = 0
+            elif (clusters[cluster]['type'] == 'green_mold'):
+                for coord in clusters[cluster]['coords']:
+                    i, j = coord
+                    median_blur_image[i][j][0] = 255
+                    median_blur_image[i][j][1] = 0
+                    median_blur_image[i][j][2] = 0
+            elif (clusters[cluster]['type'] == 'rot'):
+                for coord in clusters[cluster]['coords']:
+                    i, j = coord
+                    median_blur_image[i][j][0] = 0
+                    median_blur_image[i][j][1] = 0
+                    median_blur_image[i][j][2] = 255
+
+        cv2.imwrite(f'./picture/{bioobject_entity.name}_median_blur_image.png', median_blur_image)
+        return f'/picture/{bioobject_entity.name}_median_blur_image.png'
