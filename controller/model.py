@@ -47,51 +47,6 @@ async def ping():
     return response
 
 
-@model_router.get('/')
-async def main():
-    html_content = """
-        <html>
-    <head>
-        <script src="https://code.jquery.com/jquery-2.0.3.js"></script>
-    </head>
-
-    <body>
-	<div>
-            <input id='fileid' type='file' value="Load miRNA data"/>
-            <input id='buttonid' type='button' value='Upload' />
-	</div>
-    	<div id="output" class="container"></div>
-    </body>
-     	<script type="text/javascript">
-document.getElementById('buttonid').addEventListener('click', generate);
-
-function generate() {
-  let file = document.getElementById("fileid").files[0];
-  let formData = new FormData();
-  formData.append("file",file,file.name)
-  console.log(formData)
-  jQuery.ajax({
-    url: "/analyse",
-    type: "POST",
-    data: formData,
-    success: function (msg) {
-		output.className = 'container';
-		   const img = document.createElement( 'img' );
-    		   img.src = msg;
-              output.appendChild(img);
-    },
-    cache: false,
-    contentType: false,
-    processData: false
-  });
-}
-	</script>
- </html>    
-        """
-    return HTMLResponse(content=html_content, status_code=200)
-
-
-
 @model_router.post('/analyse/')
 async def analyse(file: UploadFile = File(...)):
     response = await model_controller.analyse(file)

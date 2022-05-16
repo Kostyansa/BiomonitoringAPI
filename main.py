@@ -23,6 +23,7 @@ app.add_middleware(
     )
 
 app.mount("/picture", StaticFiles(directory="picture"), name="picture")
+app.mount("/", StaticFiles(directory="front", html = True), name="front")
 
 def server():
     logging.debug("Starting server")
