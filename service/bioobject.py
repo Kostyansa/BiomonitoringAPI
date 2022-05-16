@@ -9,7 +9,7 @@ class BioobjectService:
 
     @staticmethod
     def build_path(name):
-        return f"./{name}"
+        return f"./picture/{name}"
 
     def get_all(self):
         return None

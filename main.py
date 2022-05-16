@@ -4,6 +4,7 @@ import threading
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from controller.model import model_router
 from settings import settings
@@ -21,6 +22,8 @@ app.add_middleware(
         allow_origins=['*']
     )
 
+app.mount("/picture", StaticFiles(directory="picture"), name="picture")
+app.mount("/", StaticFiles(directory="front", html = True), name="front")
 
 def server():
     logging.debug("Starting server")

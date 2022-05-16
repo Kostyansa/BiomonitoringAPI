@@ -1,7 +1,7 @@
 import logging
 
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
 from fastapi import File, UploadFile
 from pydantic import BaseModel
 from uuid import uuid4
@@ -34,7 +34,7 @@ class ModelController:
         bioobject = Bioobject(name, content=content)
         self.bioobject_service.save(bioobject)
         result = self.model_service.analyse(bioobject)
-        return None
+        return result
 
 
 model_router = APIRouter(tags=['model'])
@@ -47,7 +47,7 @@ async def ping():
     return response
 
 
-@model_router.post('/analyse/', response_class=JSONResponse)
+@model_router.post('/analyse/')
 async def analyse(file: UploadFile = File(...)):
     response = await model_controller.analyse(file)
     return response
