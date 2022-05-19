@@ -1,39 +1,59 @@
-<html>
-    <head>
-        <script src="https://code.jquery.com/jquery-2.0.3.js" integrity="sha256-lCf+LfUffUxr81+W0ZFpcU0LQyuZ3Bj0F2DQNCxTgSI=" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap 4, from LayoutIt!</title>
+
+    <meta name="description" content="Source code generated using layoutit.com">
+    <meta name="author" content="LayoutIt!">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-2.0.3.js" integrity="sha256-lCf+LfUffUxr81+W0ZFpcU0LQyuZ3Bj0F2DQNCxTgSI=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+	<script src="https://code.jquery.com/jquery-2.0.3.js" integrity="sha256-lCf+LfUffUxr81+W0ZFpcU0LQyuZ3Bj0F2DQNCxTgSI=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    </head>
 
-    <body>
-	<div>
-            <input id='fileid' type='file' value="Load miRNA data"/>
-            <input id='buttonid' type='button' value='Upload' />
+    <script type="text/javascript" src="js/uploadfiles.js" ></script>
+
+  </head>
+  <body>
+    <div class="container-fluid">
+    <p>
+	</p><div class="row">
+		<div class="col-md-4">
+		<div>
+			<img id="imagePlaceHolder" src="rotten_apple3.png" style="width: 500px; height: 500px;">
+		</div>
+		<div>
+			<dl>
+				Здесь будет отображен анализ изображения
+				<p>
+				Нажмите кнопку "Выбрать файл", чтобы выбрать изображение которое нужно проанализировать
+				<p>
+				Нажмите кнопку "Обработать", чтобы обработать изображение 
+			</dl>
+		</div>
+			<p></p>
+			<div id="output" class="container"></div>
+		</div>
+		<div class="col-md-2">
+			 
+			<input id="fileid" type="file" value= "Load miRNA data" class="btn btn-secondary" style="width: 337px;">
+			</button>
+   <p></p>
+			<button id="buttonid" type="button" class="btn btn-success" onclick="event.preventDefault(); generate();" style="width: 337px;">
+				Обработать
+			</button><p></p>
+			<button type="button" class="btn btn-success" style="width: 337px;">
+				Запрос из бд
+			</button>
+		</div>
 	</div>
-    	<div id="output" class="container"></div>
-    </body>
-     	<script type="text/javascript">
-document.getElementById('buttonid').addEventListener('click', generate);
-
-function generate() {
-  let file = document.getElementById("fileid").files[0];
-  let formData = new FormData();
-  formData.append("file",file,file.name)
-  console.log(formData)
-  $.ajax({
-    url: "page.php",
-    type: "POST",
-    data: formData,
-    success: function (msg) {
-		output.className = 'container';
-		   const img = document.createElement( 'img' );
-		   const url = URL.createObjectURL(res); 
-    		   img.src = url;
-              output.appendChild(img);
-    },
-    cache: false,
-    contentType: false,
-    processData: false
-  });
-}
-	</script>
- </html>    
+</div>
+</body></html>
