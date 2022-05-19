@@ -5,7 +5,7 @@ function generate() {
   let formData = new FormData();
   formData.append("file",file,file.name)
   console.log(formData)
-  axios.post('http://127.0.0.1:5000/analyse/', formData, {
+  axios.post('/analyse/', formData, {
     headers: {
       'content-Type': 'multipart/form-data'
     }
@@ -25,7 +25,7 @@ function generate() {
       necrosis_percentage.innerHTML = res.data.necrosis_percentage + '%';
 
 		   const img = document.getElementById( 'imagePlaceHolder' );
-    		   img.src = 'http://127.0.0.1:5000' + res.data.path_to_picture;
+    		   img.src = res.data.path_to_picture;
               //output.appendChild(img);
             })
             .catch(function (err) {
