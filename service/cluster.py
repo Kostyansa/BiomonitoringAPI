@@ -4,6 +4,7 @@ from sklearn.cluster import DBSCAN
 from ast import Num
 import cv2
 import numpy as np
+from torch import ne
 import entity.bioobject as bioobject
 import utils.color as color
 
@@ -20,7 +21,7 @@ class ModelService:
         image_original = image.copy()
         image_grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        ret, image_thresh = cv2.threshold(image_grayscale, 254, 255, cv2.THRESH_BINARY)
+        ret, image_thresh = cv2.threshold(image_grayscale, 245, 255, cv2.THRESH_BINARY)
 
         mask = []
         for i in range(112):
@@ -134,7 +135,8 @@ class ModelService:
                 clusters[cluster] = None
 
         cv2.waitKey(0)
-        clusters_processed = {}
+        tmp_data = {'necrosis_area' : 0, 'rot_area' : 0, \
+            'white_mold_area' : 0, 'green_mold_area' : 0}
         for cluster in clusters:
             if clusters[cluster] == None:
                 continue
@@ -145,29 +147,39 @@ class ModelService:
                     median_blur_image[i][j][1] = 255
                     median_blur_image[i][j][2] = 0
             elif (clusters[cluster]['type'] == 'necrosis'):
+                tmp_data['necrosis_area'] += clusters[cluster]['area']
                 for coord in clusters[cluster]['coords']:
                     i, j = coord
                     median_blur_image[i][j][0] = 0
                     median_blur_image[i][j][1] = 0
                     median_blur_image[i][j][2] = 0
             elif (clusters[cluster]['type'] == 'white_mold'):
+                tmp_data['white_mold_area'] += clusters[cluster]['area']
                 for coord in clusters[cluster]['coords']:
                     i, j = coord
                     median_blur_image[i][j][0] = 255
                     median_blur_image[i][j][1] = 255
                     median_blur_image[i][j][2] = 0
             elif (clusters[cluster]['type'] == 'green_mold'):
+                tmp_data['green_mold_area'] += clusters[cluster]['area']
                 for coord in clusters[cluster]['coords']:
                     i, j = coord
                     median_blur_image[i][j][0] = 255
                     median_blur_image[i][j][1] = 0
                     median_blur_image[i][j][2] = 0
             elif (clusters[cluster]['type'] == 'rot'):
+                tmp_data['rot_area'] += clusters[cluster]['area']
                 for coord in clusters[cluster]['coords']:
                     i, j = coord
                     median_blur_image[i][j][0] = 0
                     median_blur_image[i][j][1] = 0
                     median_blur_image[i][j][2] = 255
 
-        cv2.imwrite(f'./picture/{bioobject_entity.name}_median_blur_image.png', median_blur_image)
-        return f'/picture/{bioobject_entity.name}_median_blur_image.png'
+        result_data = {'path_to_picture': f'/picture/{bioobject_entity.name}_median_blur_image.png', 
+        'necrosis_percentage':   round((tmp_data['necrosis_area'] * 100) / area_of_object, 1),
+        'rot_percentage':  round((tmp_data['rot_area'] * 100)  / area_of_object, 1), 
+        'green_mold_percentage': round((tmp_data['green_mold_area'] * 100) / area_of_object, 1), 
+        'white_mold_percentage':  round((tmp_data['white_mold_area'] * 100) / area_of_object, 1)}
+
+        cv2.imwrite('.' + result_data['path_to_picture'], median_blur_image)
+        return result_data

@@ -12,8 +12,24 @@ function generate() {
 }).then(function (res) 
 		 {
               output.className = 'container';
+      green_mold_percentage = document.getElementById( 'green_mold_percentage' );
+      green_mold_percentage.innerHTML = res.data.green_mold_percentage + '%';
+      
+      white_mold_percentage = document.getElementById( 'white_mold_percentage' );
+      white_mold_percentage.innerHTML = res.data.white_mold_percentage + '%';
+      
+      rot_percentage = document.getElementById( 'rot_percentage' );
+      rot_percentage.innerHTML = res.data.rot_percentage + '%';
+      
+      necrosis_percentage = document.getElementById( 'necrosis_percentage' );
+      necrosis_percentage.innerHTML = res.data.necrosis_percentage + '%';
+
 		   const img = document.getElementById( 'imagePlaceHolder' );
+<<<<<<< HEAD
+    		   img.src = res.data.path_to_picture;
+=======
     		   img.src = res.data;
+>>>>>>> b158247fe13bd4683e4279938bf2f4d9efd28984
               //output.appendChild(img);
             })
             .catch(function (err) {
