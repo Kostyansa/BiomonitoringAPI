@@ -25,11 +25,7 @@ function generate() {
       necrosis_percentage.innerHTML = res.data.necrosis_percentage + '%';
 
 		   const img = document.getElementById( 'imagePlaceHolder' );
-<<<<<<< HEAD
     		   img.src = res.data.path_to_picture;
-=======
-    		   img.src = res.data;
->>>>>>> b158247fe13bd4683e4279938bf2f4d9efd28984
               //output.appendChild(img);
             })
             .catch(function (err) {
