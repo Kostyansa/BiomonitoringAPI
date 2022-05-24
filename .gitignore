@@ -1,5 +1,5 @@
 __pycache__
-config.json
+service/src/config.json
 .idea/
 cache/
 catboost_info/
@@ -7,4 +7,4 @@ resources/model/catboost/
 test.py
 *.log
 
-picture/
+service/src/picture/

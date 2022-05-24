@@ -1,24 +1,23 @@
 import logging
 
 from fastapi import APIRouter
-from fastapi.responses import JSONResponse, FileResponse, HTMLResponse
+from fastapi.responses import JSONResponse
 from fastapi import File, UploadFile
+import hashlib
 from pydantic import BaseModel
 from uuid import uuid4
 
 from service.cluster import ModelService
 from service.bioobject import BioobjectService
-from entity.bioobject import Bioobject
+from entity import Bioobject
+from factory.service import ServiceFactory
 
-
-class BioobjectDao(BaseModel):
-    pass
 
 
 class ModelController:
     __slots__ = ['model_service', 'bioobject_service']
 
-    def __init__(self, model_service: ModelService, bioobject_service) -> None:
+    def __init__(self, model_service: ModelService, bioobject_service: BioobjectService) -> None:
         self.model_service = model_service
         self.bioobject_service = bioobject_service
 
@@ -30,15 +29,16 @@ class ModelController:
     async def analyse(self, file):
         logging.debug(type(file))
         content = await file.read()
-        name = uuid4().hex
-        bioobject = Bioobject(name, content=content)
-        self.bioobject_service.save(bioobject)
+        name = hashlib.sha256(content).hexdigest()
+        bioobject = Bioobject(uuid=name)
+        bioobject = self.bioobject_service.save(bioobject, content)
         result = self.model_service.analyse(bioobject)
         return result
 
 
+factory = ServiceFactory.get_instance()
 model_router = APIRouter(tags=['model'])
-model_controller = ModelController(ModelService(), BioobjectService())
+model_controller = ModelController(factory.model(), factory.bioobject())
 
 
 @model_router.get('/ping/', response_class=JSONResponse)
