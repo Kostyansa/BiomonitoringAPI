@@ -5,7 +5,9 @@ import cv2
 import numpy as np
 from torch import ne
 import entity as bioobject
-import utils.color as color
+import utils_.color as color
+from utils_.source import *
+#from source import *=
 
 
 class ModelService:
@@ -15,17 +17,37 @@ class ModelService:
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
         image = cv2.imread(f'./picture/{bioobject_entity.uuid}')
+        image_new = cv2.resize(image, (512, 512))
 
-        image = cv2.resize(image, (256, 112))
+        cv2.imwrite('tmp/tmp_image.png', image_new)
+        device = "cpu"
+        segment_image = AnalyzingImage(dic_name="utils_/net_dic_0314_05000", device=device, threshold=0.5, average=True, mode="median", save_all=True,
+                 show_adjusted=True, show_adjust_process=False, show_final=True, show_in_original=False, 
+                 size_pointer1=5, size_pointer2=10)
+        url = 'tmp/tmp_image.png'
+        pic_original = open_image(url)
+        center = (256, 256)
+        scale = 256
+        _ = segment_image(pic_original, center, scale)
+        _[0][2].save('tmp/mask.png')
+
+        image = cv2.imread('tmp/original.png')
+        image_thresh = cv2.imread('tmp/mask.png')
+        #image_thresh = cv2.resize(image_thresh, (512, 512))
+
+        #image = cv2.resize(image, (512, 512))
         image_original = image.copy()
-        image_grayscale = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-        ret, image_thresh = cv2.threshold(image_grayscale, 245, 255, cv2.THRESH_BINARY)
+
+        #ret, image_thresh = cv2.threshold(image_grayscale, 245, 255, cv2.THRESH_BINARY)
+        #112
+        #256
 
         mask = []
-        for i in range(112):
-            for j in range(256):
-                if image_thresh[i][j] == 0:
+        for i in range(512):
+            for j in range(512):
+                if image_thresh[i][j][0] == 255 and image_thresh[i][j][1] == 0 \
+                    and image_thresh[i][j][2] == 255:
                     mask.append([i, j])
 
         area_of_object = len(mask)
