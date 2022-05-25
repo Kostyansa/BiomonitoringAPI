@@ -1,5 +1,3 @@
-document.getElementById('buttonid').addEventListener('click', generate);
-
 function generate() {
   let file = document.getElementById("fileid").files[0];
   let formData = new FormData();

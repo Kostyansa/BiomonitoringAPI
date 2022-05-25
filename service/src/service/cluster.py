@@ -19,20 +19,20 @@ class ModelService:
         image = cv2.imread(f'./picture/{bioobject_entity.uuid}')
         image_new = cv2.resize(image, (512, 512))
 
-        cv2.imwrite('tmp/tmp_image.png', image_new)
+        cv2.imwrite('tmp_image.png', image_new)
         device = "cpu"
         segment_image = AnalyzingImage(dic_name="utils_/net_dic_0314_05000", device=device, threshold=0.5, average=True, mode="median", save_all=True,
                  show_adjusted=True, show_adjust_process=False, show_final=True, show_in_original=False, 
                  size_pointer1=5, size_pointer2=10)
-        url = 'tmp/tmp_image.png'
+        url = 'tmp_image.png'
         pic_original = open_image(url)
         center = (256, 256)
         scale = 256
         _ = segment_image(pic_original, center, scale)
-        _[0][2].save('tmp/mask.png')
+        _[0][2].save('mask.png')
 
-        image = cv2.imread('tmp/original.png')
-        image_thresh = cv2.imread('tmp/mask.png')
+        image = cv2.imread('original.png')
+        image_thresh = cv2.imread('mask.png')
         #image_thresh = cv2.resize(image_thresh, (512, 512))
 
         #image = cv2.resize(image, (512, 512))

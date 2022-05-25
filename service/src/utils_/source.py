@@ -2,7 +2,6 @@ from ast import Pass
 import glob, os, re, csv, copy, time
 import numpy as np
 from PIL import Image, ImageDraw
-import matplotlib.pyplot as plt
 import torch
 import torchvision.transforms.functional as ttf
 import torchvision.transforms as transforms

@@ -3,7 +3,6 @@ import logging
 
 from config.engine import InternalDatabaseConfiguration
 from repository.bioobject import BioobjectRepository
-from exception.uninitialized import FailedInitialization
 
 
 class RepositoryFactory:
