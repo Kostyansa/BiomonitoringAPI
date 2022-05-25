@@ -1,5 +1,8 @@
+import logging
 import os
 from sqlalchemy import create_engine
+
+from config.constants import Constants
 
 
 class InternalDatabaseConfiguration:
@@ -12,7 +15,7 @@ class InternalDatabaseConfiguration:
     def get_engine(cls):
         if cls.engine is None:
             cls.engine = create_engine(
-                cls.DB_URL,
+                Constants.DB_URL,
                 echo=False,
                 executemany_mode='values',
                 executemany_values_page_size=cls.BATCH_SIZE

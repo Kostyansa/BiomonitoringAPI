@@ -1,14 +1,13 @@
 import logging
 
 from sklearn.cluster import DBSCAN
-from ast import Num
 import cv2
 import numpy as np
 from torch import ne
-import entity.bioobject as bioobject
+import entity as bioobject
 import utils_.color as color
 from utils_.source import *
-#from source import *
+#from source import *=
 
 
 class ModelService:
@@ -17,8 +16,7 @@ class ModelService:
         pass
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
-        
-        image = cv2.imread(f'./picture/{bioobject_entity.name}')
+        image = cv2.imread(f'./picture/{bioobject_entity.uuid}')
         image_new = cv2.resize(image, (512, 512))
 
         cv2.imwrite('tmp/tmp_image.png', image_new)
@@ -198,7 +196,7 @@ class ModelService:
                     median_blur_image[i][j][1] = 0
                     median_blur_image[i][j][2] = 255
 
-        result_data = {'path_to_picture': f'/picture/{bioobject_entity.name}_median_blur_image.png', 
+        result_data = {'path_to_picture': f'/picture/{bioobject_entity.uuid}_median_blur_image.png', 
         'necrosis_percentage':   round((tmp_data['necrosis_area'] * 100) / area_of_object, 1),
         'rot_percentage':  round((tmp_data['rot_area'] * 100)  / area_of_object, 1), 
         'green_mold_percentage': round((tmp_data['green_mold_area'] * 100) / area_of_object, 1), 
