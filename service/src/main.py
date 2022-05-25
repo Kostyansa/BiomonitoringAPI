@@ -8,7 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from controller.model import model_router
 from controller.bioobject import bioobject_router
-from settings import settings
+from config.settings import settings
 
 logging.basicConfig(filename="ml.log", format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 

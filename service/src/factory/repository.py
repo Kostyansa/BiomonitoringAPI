@@ -21,9 +21,5 @@ class RepositoryFactory:
     @classmethod
     def get_instance(cls):
         if cls.instance is None:
-            try:
-                cls.instance = RepositoryFactory(InternalDatabaseConfiguration.get_engine())
-            except Exception as exc:
-                logging.warning("Failled to initialize Weather Repository")
-                raise FailedInitialization("WeatherRepository") from exc
+            cls.instance = RepositoryFactory(InternalDatabaseConfiguration.get_engine())
         return cls.instance

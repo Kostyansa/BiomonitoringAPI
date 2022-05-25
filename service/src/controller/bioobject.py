@@ -31,19 +31,14 @@ bioobject_router = APIRouter(prefix='/bioobject', tags=['bioobject'])
 bioobject_controller = BioobjectController(factory.bioobject())
 
 
-@bioobject_router.get('/get/', response_class=JSONResponse)
+@bioobject_router.get('/get', response_class=JSONResponse)
 async def get(id: str):
     response = bioobject_controller.get(id)
     return response
 
 
-@bioobject_router.get('/get/', response_class=JSONResponse)
+@bioobject_router.get('/get', response_class=JSONResponse)
 async def get():
     response = bioobject_controller.get_all()
     return response
 
-
-@bioobject_router.post('/save/', response_class=JSONResponse)
-async def save(name: str = uuid4().hex, file: UploadFile = File(...)):
-    response = bioobject_controller.save(name, file)
-    return response
