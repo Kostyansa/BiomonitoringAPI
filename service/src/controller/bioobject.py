@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 from fastapi import File, UploadFile
@@ -22,10 +24,14 @@ class BioobjectController:
         self.bioobject_service = bioobject_service
 
     def get(self, id: str):
-        return self.bioobject_service.get(id)
+        bioobject = self.bioobject_service.get(id)
+        logging.debug(bioobject)
+        return self.mapper(bioobject)
 
     def get_all(self):
-        return self.bioobject_service.get_all()
+        bioobjects = self.bioobject_service.get_all()
+        logging.debug(bioobjects)
+        return map(self.mapper, bioobjects)
 
     def save(self, name, file):
         content = file.read()
@@ -41,11 +47,11 @@ bioobject_controller = BioobjectController(factory.bioobject())
 @bioobject_router.get('/get', response_class=JSONResponse)
 async def get(id: str):
     response = bioobject_controller.get(id)
-    return bioobject_controller.mapper(response)
+    return response
 
 
 @bioobject_router.get('/get', response_class=JSONResponse)
 async def get():
     response = bioobject_controller.get_all()
-    return map(bioobject_controller.mapper, response)
+    return response
 

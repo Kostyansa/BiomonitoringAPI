@@ -13,7 +13,6 @@ from entity import Bioobject
 from factory.service import ServiceFactory
 
 
-
 class ModelController:
     __slots__ = ['model_service', 'bioobject_service']
 
