@@ -10,7 +10,7 @@ from controller.model import model_router
 from controller.bioobject import bioobject_router
 from config.settings import settings
 
-logging.basicConfig(filename="ml.log", format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 app = FastAPI(docs_url='/api/', redoc_url=None, title=settings.APP_TITLE, version=settings.APP_VERSION,
               swagger_ui_oauth2_redirect_url='/api/oauth2-redirect/')
