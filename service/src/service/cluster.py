@@ -29,6 +29,7 @@ class ModelService:
         center = (256, 256)
         scale = 256
         _ = segment_image(pic_original, center, scale)
+        _[0][0].save('original.png')
         _[0][2].save('mask.png')
 
         image = cv2.imread('original.png')
