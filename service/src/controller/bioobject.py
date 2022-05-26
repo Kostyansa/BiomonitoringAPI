@@ -11,6 +11,13 @@ from factory.service import ServiceFactory
 class BioobjectController:
     __slots__ = ['bioobject_service']
 
+    @staticmethod
+    def mapper(bioobject):
+        return {
+            "uuid": bioobject.uuid,
+            "original": f'/picture/{bioobject.uuid}'
+        }
+
     def __init__(self, bioobject_service: BioobjectService) -> None:
         self.bioobject_service = bioobject_service
 
@@ -34,11 +41,11 @@ bioobject_controller = BioobjectController(factory.bioobject())
 @bioobject_router.get('/get', response_class=JSONResponse)
 async def get(id: str):
     response = bioobject_controller.get(id)
-    return response
+    return bioobject_controller.mapper(response)
 
 
 @bioobject_router.get('/get', response_class=JSONResponse)
 async def get():
     response = bioobject_controller.get_all()
-    return response
+    return map(bioobject_controller.mapper, response)
 
