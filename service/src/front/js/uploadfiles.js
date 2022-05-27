@@ -53,11 +53,11 @@ function select_from_table(){
     axios.get('/bioobject/')
       .then(function (res) {
       console.log(res.data)
-      for (i in res.data){
+      for (i = 0; i < res.data.length; i++){
         elem = document.createElement('tr')
-        elem.innerHTML = "<td>" + i.uuid + "</td> \
-          <td>" + i.original + "</td> \
-          <td>" + i.analysis + "</td>"
+        elem.innerHTML = "<td>" + res.data[i].uuid + "</td> \
+          <td>" + res.data[i].original + "</td> \
+          <td>" + res.data[i].analysis + "</td>"
       parent_table.appendChild(elem)
       }
       })
