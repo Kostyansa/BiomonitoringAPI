@@ -55,9 +55,9 @@ function select_from_table(){
       console.log(res.data)
       for (i in res.data){
         elem = document.createElement('tr')
-        elem.innerHTML = "<td>" + i.uuid + "</td> \
-          <td>" + i.original + "</td> \
-          <td>" + i.analysis + "</td>"
+        elem.innerHTML = "<td>" + res.data.uuid + "</td> \
+          <td>" + res.data.original + "</td> \
+          <td>" + res.data.analysis + "</td>"
       parent_table.appendChild(elem)
       }
       })
