@@ -12,7 +12,6 @@ function generate() {
 }).then(function (res) 
 		 {
               output.className = 'container';
-              res.data = JSON.parse(res.data)
       green_mold_percentage = document.getElementById( 'green_mold_percentage' );
       green_mold_percentage.innerHTML = res.data.green_mold_percentage + '%';
       
