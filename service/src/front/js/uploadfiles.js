@@ -38,7 +38,7 @@ function select_from_table(){
 
   const id = document.getElementById('id_data').value
   let sql_table = document.getElementById('sql_table')
-  let invisible_row = document.getElementById('invisible_row')
+  var invisible_row = document.getElementById('invisible_row')
   sql_table.innerHTML = "<tbody> \
                           <tr> \
                             <td>id</td> \
@@ -49,19 +49,16 @@ function select_from_table(){
                         <div id='invisible_row' hidden='true'></div>"
   if (id == ""){
     sql_table.removeAttribute('hidden')
+    var parent_table = document.getElementById('parent_table')
     axios.get('/bioobject/')
       .then(function (res) {
       console.log(res.data)
       for (i in res.data){
         elem = document.createElement('tr')
-        elem.innerHTML = "<tbody> \
-          <tr> \
-          <td>" + res.data.uuid + "</td> \
+        elem.innerHTML = "<td>" + res.data.uuid + "</td> \
           <td>" + res.data.original + "</td> \
-          <td>" + res.data.analysis + "</td> \
-          </tr> \
-      </tbody>"
-      sql_table.insertBefore(elem, invisible_row)
+          <td>" + res.data.analysis + "</td>"
+      parent_table.appendChild(elem)
       }
       })
   }
