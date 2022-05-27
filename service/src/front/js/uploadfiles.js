@@ -54,10 +54,11 @@ function select_from_table(){
       .then(function (res) {
       console.log(res.data)
       for (i = 0; i < res.data.length; i++){
+        var data = JSON.parse(res.data[i])
         elem = document.createElement('tr')
-        elem.innerHTML = "<td>" + res.data[i].uuid + "</td> \
-          <td>" + res.data[i].original + "</td> \
-          <td>" + res.data[i].analysis + "</td>"
+        elem.innerHTML = "<td>" + data.uuid + "</td> \
+          <td>" + data.original + "</td> \
+          <td>" + data.analysis + "</td>"
       parent_table.appendChild(elem)
       }
       })
