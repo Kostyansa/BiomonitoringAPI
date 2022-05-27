@@ -57,7 +57,7 @@ function select_from_table(){
         var data = JSON.parse(res.data[i])
         elem = document.createElement('tr')
         elem.innerHTML = "<td>" + data.uuid + "</td> \
-          <td>" + <a href=data.original></a> + "</td> \
+          <td><a href=" + data.original + "></a></td> \
           <td>" + JSON.stringify(data.analysis) + "</td>"
       parent_table.appendChild(elem)
       }
