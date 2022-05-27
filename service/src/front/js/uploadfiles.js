@@ -39,7 +39,7 @@ function select_from_table(){
   const id = document.getElementById('id_data').value
   let sql_table = document.getElementById('sql_table')
   var invisible_row = document.getElementById('invisible_row')
-  sql_table.innerHTML = "<tbody> \
+  sql_table.innerHTML = "<tbody id='parent_table'> \
                           <tr> \
                             <td>id</td> \
                             <td>Название изображения</td> \
