@@ -67,20 +67,21 @@ function select_from_table(){
     axios.get('/bioobject/get?id=' + id)
       .then(function (res) {
         sql_table.setAttribute('hidden', 'true')
+	let data = JSON.parse(res.data) 
         green_mold_percentage = document.getElementById( 'green_mold_percentage' );
-        green_mold_percentage.innerHTML = res.data.analysis.green_mold_percentage + '%';
+        green_mold_percentage.innerHTML = data.analysis.green_mold_percentage + '%';
       
         white_mold_percentage = document.getElementById( 'white_mold_percentage' );
-        white_mold_percentage.innerHTML = res.data.analysis.white_mold_percentage + '%';
+        white_mold_percentage.innerHTML = data.analysis.white_mold_percentage + '%';
       
         rot_percentage = document.getElementById( 'rot_percentage' );
-        rot_percentage.innerHTML = res.data.analysis.rot_percentage + '%';
+        rot_percentage.innerHTML = data.analysis.rot_percentage + '%';
       
         necrosis_percentage = document.getElementById( 'necrosis_percentage' );
-        necrosis_percentage.innerHTML = res.analysis.data.necrosis_percentage + '%';
+        necrosis_percentage.innerHTML = data.analysis.necrosis_percentage + '%';
 
 		    const img = document.getElementById( 'imagePlaceHolder' );
-    		    img.src = res.data.path_to_picture;
+    		    img.src = data.analysis.path_to_picture;
       })
     
 
