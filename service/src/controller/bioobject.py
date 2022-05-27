@@ -1,4 +1,5 @@
 import logging
+import json
 
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
@@ -15,23 +16,22 @@ class BioobjectController:
 
     @staticmethod
     def mapper(bioobject):
-        return {
+        return json.dumps({
             "uuid": bioobject.uuid,
-            "original": f'/picture/{bioobject.uuid}'
-        }
+            "original": f'/picture/{bioobject.uuid}',
+            "analysis": bioobject.analysis.content if bioobject.analysis is not None else None
+        })
 
     def __init__(self, bioobject_service: BioobjectService) -> None:
         self.bioobject_service = bioobject_service
 
     def get(self, id: str):
         bioobject = self.bioobject_service.get(id)
-        logging.debug(bioobject)
         return self.mapper(bioobject)
 
     def get_all(self):
         bioobjects = self.bioobject_service.get_all()
-        logging.debug(bioobjects)
-        return map(self.mapper, bioobjects)
+        return list(map(self.mapper, bioobjects))
 
     def save(self, name, file):
         content = file.read()
@@ -46,12 +46,21 @@ bioobject_controller = BioobjectController(factory.bioobject())
 
 @bioobject_router.get('/get', response_class=JSONResponse)
 async def get(id: str):
-    response = bioobject_controller.get(id)
-    return response
+    try:
+        response = bioobject_controller.get(id)
+        logging.debug(response)
+        return response
+    except Exception as exc:
+        logging.debug(exc)
+        return None
 
 
-@bioobject_router.get('/get', response_class=JSONResponse)
-async def get():
-    response = bioobject_controller.get_all()
-    return response
-
+@bioobject_router.get('/', response_class=JSONResponse)
+async def get_all():
+    try:
+        response = bioobject_controller.get_all()
+        logging.debug(response)
+        return response
+    except Exception as exc:
+        logging.debug(exc)
+        return None

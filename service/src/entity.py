@@ -10,16 +10,15 @@ Base = declarative_base()
 class Bioobject(Base):
     __tablename__ = "bioobject"
 
-    id = Column(Integer, primary_key=True)
-    uuid = Column(String, nullable=False)
+    uuid = Column(String, nullable=False, primary_key=True)
 
-    analysis = relationship("Analysis")
+    analysis = relationship("Analysis", lazy="immediate", backref="bioobject", uselist=False)
 
 
 class Analysis(Base):
     __tablename__ = "analysis"
     id = Column(Integer, primary_key=True)
-    bioobject_id = Column(Integer, ForeignKey("bioobject.id"), nullable=False)
+    bioobject_uuid = Column(String, ForeignKey("bioobject.uuid"), nullable=False)
     content = Column(JSON, nullable=False)
 
 

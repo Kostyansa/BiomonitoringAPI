@@ -29,10 +29,19 @@ class ModelController:
         logging.debug(type(file))
         content = await file.read()
         name = hashlib.sha256(content).hexdigest()
-        bioobject = Bioobject(uuid=name)
-        bioobject = self.bioobject_service.save(bioobject, content)
-        result = self.model_service.analyse(bioobject)
-        return result
+        bioobject = self.bioobject_service.get(name)
+        logging.debug(bioobject)
+        if not bioobject:
+            logging.debug(f"Saving: {name}")
+            bioobject = Bioobject(uuid=name)
+            self.bioobject_service.save(bioobject, content)
+            bioobject = self.bioobject_service.get(name)
+        if not bioobject.analysis:
+            logging.debug(f"Analysing: {bioobject.uuid}")
+            return self.model_service.analyse(bioobject)
+        else:
+            logging.debug(f"Returning hash: {bioobject.uuid}")
+            return bioobject.analysis.content
 
 
 factory = ServiceFactory.get_instance()
@@ -49,4 +58,5 @@ async def ping():
 @model_router.post('/analyse/')
 async def analyse(file: UploadFile = File(...)):
     response = await model_controller.analyse(file)
+    logging.debug(f"Analysed response: {response}")
     return response

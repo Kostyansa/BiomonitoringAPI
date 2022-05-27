@@ -1,3 +1,4 @@
+import json
 import logging
 
 from sklearn.cluster import DBSCAN
@@ -12,8 +13,8 @@ from utils_.source import *
 
 class ModelService:
 
-    def __init__(self):
-        pass
+    def __init__(self, analysis_repository):
+        self.analysis_repository = analysis_repository
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
         image = cv2.imread(f'./picture/{bioobject_entity.uuid}')
@@ -203,5 +204,10 @@ class ModelService:
         'green_mold_percentage': round((tmp_data['green_mold_area'] * 100) / area_of_object, 1), 
         'white_mold_percentage':  round((tmp_data['white_mold_area'] * 100) / area_of_object, 1)}
 
+        analysis = bioobject.Analysis(
+            bioobject_uuid=bioobject_entity.uuid,
+            content=result_data
+        )
+        self.analysis_repository.save(analysis)
         cv2.imwrite('.' + result_data['path_to_picture'], median_blur_image)
         return result_data

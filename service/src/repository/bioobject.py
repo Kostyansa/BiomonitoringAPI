@@ -23,8 +23,6 @@ class BioobjectRepository:
         with Session(self.engine, expire_on_commit=False) as session:
             session.add(bioobject)
             session.commit()
-            session.expunge(bioobject)
-            return bioobject
 
     def get_all(self):
         with Session(self.engine) as session:
@@ -35,9 +33,10 @@ class BioobjectRepository:
 
     def get(self, name: str):
         with Session(self.engine) as session:
-            statement = select(Bioobject).where(Bioobject.uuid.is_(name))
-            bioobject = session.scalars(statement).one()
-            session.expunge(bioobject)
+            statement = select(Bioobject).where(Bioobject.uuid == name)
+            bioobject = session.scalars(statement).one_or_none()
+            if bioobject is not None:
+                session.expunge(bioobject)
             return bioobject
 
 

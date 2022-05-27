@@ -13,7 +13,7 @@ class ServiceFactory:
 
     def model(self):
         if self.model_service is None:
-            self.model_service = ModelService()
+            self.model_service = ModelService(self.repository_factory.analysis())
         return self.model_service
 
     def bioobject(self):

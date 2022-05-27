@@ -10,7 +10,6 @@ from controller.model import model_router
 from controller.bioobject import bioobject_router
 from config.settings import settings
 
-logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
 
 app = FastAPI(docs_url='/api/', redoc_url=None, title=settings.APP_TITLE, version=settings.APP_VERSION,
               swagger_ui_oauth2_redirect_url='/api/oauth2-redirect/')
@@ -30,6 +29,7 @@ def server():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(format='%(asctime)s:%(levelname)s:%(message)s', level=logging.DEBUG)
     server_thread = threading.Thread(target=server, daemon=True)
     server_thread.start()
     server_thread.join()

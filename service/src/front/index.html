@@ -12,6 +12,7 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+	<link href="css/table.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-2.0.3.js" integrity="sha256-lCf+LfUffUxr81+W0ZFpcU0LQyuZ3Bj0F2DQNCxTgSI=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
@@ -28,7 +29,7 @@
 	</p><div class="row">
 		<div class="col-md-4">
 		<div>
-			<img id="imagePlaceHolder" src="rotten_apple3.png" style="width: 500px; height: 500px;">
+			<img id="imagePlaceHolder" src="artworks-000069893634-xytnmv-t500x500.jpg" style="width: 500px; height: 500px;">
 		</div>
 		<div>
 			<dl>
@@ -38,7 +39,7 @@
 				<p>
 				Нажмите кнопку "Обработать", чтобы обработать изображение 
 			</dl>
-			<table class="iksweb">
+			<table>
 				<tbody>
 					<tr>
 						<td><div id="cc_color" class="true" style="background: rgb(0, 0, 0); width: 10px; height: 10px;"></div></td>
@@ -74,9 +75,22 @@
 			<button id="buttonid" type="button" class="btn btn-success" onclick="event.preventDefault(); generate();" style="width: 337px;">
 				Обработать
 			</button><p></p>
-			<button type="button" class="btn btn-success" style="width: 337px;">
+			<input id = 'id_data' style="width: 337px"></input>
+			<p></p>
+			<button onclick="event.preventDefault(); select_from_table();" type="button" class="btn btn-success" style="width: 337px;">
 				Запрос из бд
 			</button>
+			<p></p>
+			<table id="sql_table" class="iksweb" hidden="true">
+				<tbody>
+					<tr id="first_row">
+						<td>id</td>
+						<td>Название изображения</td>
+						<td>Результаты анализа</td>
+					</tr>
+					<div id="invisible_row" hidden="true"></div>
+				</tbody>
+			</table>
 		</div>
 	</div>
 </div>
