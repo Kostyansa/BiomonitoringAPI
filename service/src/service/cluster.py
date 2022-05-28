@@ -18,7 +18,7 @@ class ModelService:
 
     def analyse(self, bioobject_entity: bioobject.Bioobject):
         image = cv2.imread(f'./picture/{bioobject_entity.uuid}')
-        image_new = cv2.resize(image, (512, 512))
+        image_new = cv2.resize(image, (256, 256))
 
         cv2.imwrite('tmp_image.png', image_new)
         device = "cpu"
@@ -26,9 +26,10 @@ class ModelService:
                  show_adjusted=True, show_adjust_process=False, show_final=True, show_in_original=False, 
                  size_pointer1=5, size_pointer2=10)
         url = 'tmp_image.png'
-        pic_original = open_image(url)
-        center = (256, 256)
-        scale = 256
+        pic_original = open_image(f'./picture/{bioobject_entity.name}')
+        width, height = pic_original.size
+        center = (width / 2, height / 2)
+        scale = max(width, height) / 2
         _ = segment_image(pic_original, center, scale)
         _[0][0].save('original.png')
         _[0][2].save('mask.png')
@@ -46,8 +47,8 @@ class ModelService:
         #256
 
         mask = []
-        for i in range(512):
-            for j in range(512):
+        for i in range(256):
+            for j in range(256):
                 if image_thresh[i][j][0] == 255 and image_thresh[i][j][1] == 0 \
                     and image_thresh[i][j][2] == 255:
                     mask.append([i, j])
@@ -82,7 +83,7 @@ class ModelService:
 
         data_for_clustering = np.array(data_for_clustering)
 
-        clustering = DBSCAN(eps=epsilon_precision, min_samples=2, n_jobs=-1).fit(data_for_clustering)
+        clustering = DBSCAN(eps=0.013, min_samples=2, n_jobs=-1).fit(data_for_clustering)
 
         labels_for_image = clustering.labels_
         labels_quantity_ = clustering.labels_.max() - clustering.labels_.min() + 2
@@ -123,10 +124,10 @@ class ModelService:
                 clusters[cluster]['median_original_color'][1] /= clusters[cluster]['area']
                 clusters[cluster]['median_original_color'][2] /= clusters[cluster]['area']
                 if (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][2]
-                        > clusters[cluster]['median_original_color'][1] and 15 <=
-                        clusters[cluster]['median_original_color'][0] <= 84 and
-                        36 <= clusters[cluster]['median_original_color'][1] <= 103 and 93 <=
-                        clusters[cluster]['median_original_color'][2] <= 144):
+                        > clusters[cluster]['median_original_color'][1] and 10 <=
+                        clusters[cluster]['median_original_color'][0] <= 90 and
+                        31 <= clusters[cluster]['median_original_color'][1] <= 109 and 88 <=
+                        clusters[cluster]['median_original_color'][2] <= 150):
                     clusters[cluster]['type'] = 'rot'
 
                 elif (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][1]
