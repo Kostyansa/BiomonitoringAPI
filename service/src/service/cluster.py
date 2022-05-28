@@ -35,7 +35,9 @@ class ModelService:
         _[0][2].save('mask.png')
 
         image = cv2.imread('original.png')
+        image = cv2.resize(image, (256, 256))
         image_thresh = cv2.imread('mask.png')
+        image_thresh = cv2.resize(image_thresh, (256, 256))
         #image_thresh = cv2.resize(image_thresh, (512, 512))
 
         #image = cv2.resize(image, (512, 512))
