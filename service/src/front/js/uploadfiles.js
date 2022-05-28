@@ -55,7 +55,7 @@ function select_from_table(){
       console.log(res.data)
       for (i = 0; i < res.data.length; i++){
         var data = JSON.parse(res.data[i])
-		var analyse = JSON.stringify(data.analysis)
+		var analyse = JSON.parse(data.analysis)
         elem = document.createElement('tr')
         elem.innerHTML = "<td>" + data.uuid + "</td> \
           <td>" + data.original + "</td> \
