@@ -26,7 +26,7 @@ class ModelService:
                  show_adjusted=True, show_adjust_process=False, show_final=True, show_in_original=False, 
                  size_pointer1=5, size_pointer2=10)
         url = 'tmp_image.png'
-        pic_original = open_image(f'./picture/{bioobject_entity.name}')
+        pic_original = open_image(f'./picture/{bioobject_entity.uuid}')
         width, height = pic_original.size
         center = (width / 2, height / 2)
         scale = max(width, height) / 2
