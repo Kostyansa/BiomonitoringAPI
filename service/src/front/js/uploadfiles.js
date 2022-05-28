@@ -55,14 +55,13 @@ function select_from_table(){
       console.log(res.data)
       for (i = 0; i < res.data.length; i++){
         var data = JSON.parse(res.data[i])
-		var analyse = JSON.parse(data.analysis)
         elem = document.createElement('tr')
         elem.innerHTML = "<td>" + data.uuid + "</td> \
           <td>" + data.original + "</td> \
-          <td>" + "Некроз:" + analyse.necrosis_percentage + "%  " +
-			"Гниль:" + analyse.rot_percentage + "%  " +
-			"Белая плесень:" + analyse.white_mold_percentage + "%  " +
-			"Зеленая плесень:" + analyse.green_percentage + "%  " +
+          <td>" + "Некроз:" + data.analysis.necrosis_percentage + "%  " +
+			"Гниль:" + data.analysis.rot_percentage + "%  " +
+			"Белая плесень:" + data.analysis.white_mold_percentage + "%  " +
+			"Зеленая плесень:" + data.analysis.green_percentage + "%  " +
 			"</td>"
       parent_table.appendChild(elem)
       }
