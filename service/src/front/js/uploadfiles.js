@@ -61,7 +61,7 @@ function select_from_table(){
           <td>" + "Некроз:" + data.analysis.necrosis_percentage + "%  " +
 			"Гниль:" + data.analysis.rot_percentage + "%  " +
 			"Белая плесень:" + data.analysis.white_mold_percentage + "%  " +
-			"Зеленая плесень:" + data.analysis.green_percentage + "%  " +
+			"Зеленая плесень:" + data.analysis.green_mold_percentage + "%  " +
 			"</td>"
       parent_table.appendChild(elem)
       }
