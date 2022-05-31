@@ -102,65 +102,45 @@ class ModelService:
         median_blur_image = cv2.medianBlur(image, 5)
 
         clusters = {}
+        image_original = cv2.cvtColor(image_original, cv2.COLOR_BGR2HSV)
 
         for coords in mask:
             i, j = coords
             hex_color = color.RGB2HEX(median_blur_image[i][j])
             if not (hex_color in clusters):
                 clusters[hex_color] = {'area': 1,
-                                       'median_original_color': [int(image_original[i][j][0]),
-                                                                 int(image_original[i][j][1]),
-                                                                 int(image_original[i][j][2])],
+                                       'median_original_color': [int(image_original[i][j][0]), int(image_original[i][j][1]), int(image_original[i][j][2])],
                                        'coords': [[i, j]]}
                 # clusters.add(Cluster(median_blur_image[i][j], image_original[i][j]))
             else:
                 clusters[hex_color]['area'] += 1
                 clusters[hex_color]['median_original_color'][0] += image_original[i][j][0]
-                clusters[hex_color]['median_original_color'][1] += image_original[i][j][1]
                 clusters[hex_color]['median_original_color'][2] += image_original[i][j][2]
                 clusters[hex_color]['coords'].append([i, j])
 
         for cluster in clusters:
-            if (clusters[cluster]['area'] >= 10):
+            if (clusters[cluster]['area'] >= 5):
                 clusters[cluster]['median_original_color'][0] /= clusters[cluster]['area']
-                clusters[cluster]['median_original_color'][1] /= clusters[cluster]['area']
                 clusters[cluster]['median_original_color'][2] /= clusters[cluster]['area']
-                if (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][2]
-                        > clusters[cluster]['median_original_color'][1] and 10 <=
-                        clusters[cluster]['median_original_color'][0] <= 90 and
-                        31 <= clusters[cluster]['median_original_color'][1] <= 109 and 88 <=
-                        clusters[cluster]['median_original_color'][2] <= 150):
+                print(clusters[cluster]['median_original_color'], clusters[cluster]['area'])
+                if (0 < clusters[cluster]['median_original_color'][2] < 60):
+                    clusters[cluster]['type'] = 'necrosis'
+                
+                elif ( 8 < clusters[cluster]['median_original_color'][0] < 17):
                     clusters[cluster]['type'] = 'rot'
 
-                elif (clusters[cluster]['median_original_color'][0] < clusters[cluster]['median_original_color'][1]
-                      > clusters[cluster]['median_original_color'][2] and 66 <=
-                      clusters[cluster]['median_original_color'][0] <= 146 and
-                      66 <= clusters[cluster]['median_original_color'][1] <= 206 and 60 <=
-                      clusters[cluster]['median_original_color'][2] <= 188):
-                    clusters[cluster]['type'] = 'green_mould'
-
-                elif (0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
-                    1] <= 1 and
-                      0.8 <= clusters[cluster]['median_original_color'][1] / clusters[cluster]['median_original_color'][
-                          2] <= 1 and
-                      0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
-                          2] <= 1 and
-                      clusters[cluster]['median_original_color'][0] < 150):
-                    clusters[cluster]['type'] = 'necrosis'
-                elif (0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
-                    1] <= 1 and
-                      0.8 <= clusters[cluster]['median_original_color'][1] / clusters[cluster]['median_original_color'][
-                          2] <= 1 and
-                      0.8 <= clusters[cluster]['median_original_color'][0] / clusters[cluster]['median_original_color'][
-                          2] <= 1 and
-                      clusters[cluster]['median_original_color'][0] > 150):
-                    clusters[cluster]['type'] = 'white_mold'
+                elif (50 < clusters[cluster]['median_original_color'][0] < 80):
+                    clusters[cluster]['type'] = 'green_mold'
+                #elif (180 < clusters[cluster]['median_original_color'][2]):
+                #    clusters[cluster]['type'] = 'white_mold'
                 else:
                     clusters[cluster]['type'] = 'normal'
+
             else:
                 clusters[cluster] = None
 
         cv2.waitKey(0)
+        image_original = cv2.cvtColor(image_original, cv2.COLOR_HSV2BGR)
         tmp_data = {'necrosis_area' : 0, 'rot_area' : 0, \
             'white_mold_area' : 0, 'green_mold_area' : 0}
         for cluster in clusters:
