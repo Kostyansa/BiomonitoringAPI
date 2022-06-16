@@ -131,8 +131,8 @@ class ModelService:
 
                 elif (50 < clusters[cluster]['median_original_color'][0] < 80):
                     clusters[cluster]['type'] = 'green_mold'
-                #elif (180 < clusters[cluster]['median_original_color'][2]):
-                #    clusters[cluster]['type'] = 'white_mold'
+                elif (180 < clusters[cluster]['median_original_color'][2]):
+                    clusters[cluster]['type'] = 'white_mold'
                 else:
                     clusters[cluster]['type'] = 'normal'
 
